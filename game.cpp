@@ -51,13 +51,14 @@ int main() {
 					//check if value at each adjacency is present
 					if ( xOffSet == 0 && yOffSet == 0 )
 					{
+						//this means it's checking it's own value, do nothing
 					}
 					else if ( current[ x + xOffSet ][ y + yOffSet]  )
 						count++;
 				}
 
 			}
-			cout << endl << "Count at " << x <<" " << y << "is " << count << endl;
+			cout << endl << "Count at " << x <<" " << y << " is " << count << endl;
 			if( count < 2 || count > 3)
 			{
 				//we die or stay dead
@@ -80,7 +81,14 @@ int main() {
 	{
 		for( int y = 1; y < SIZE -1 ; y++ )
 		{
-			cout << updated[x][y];
+			if( updated[x][y] )
+			{
+				cout << "\u25A0";
+			}
+			else
+			{
+				cout << "\u25A1";
+			};
 		}
 		cout << endl;
 
