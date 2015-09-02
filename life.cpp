@@ -19,7 +19,6 @@ int life::aliveNext( int x, int y)
 			}
 		}
 	}
-	std::cout << "count is " << count << std::endl;
 	if( count < 2 || count > 3)
 	{
 		//we die or stay dead
@@ -67,9 +66,9 @@ void life::print()
 		for ( int y = 1; y <= kGameSize ; y++ )
 		{
 			if (current[x][y])
-				std::cout << 1;
+				std::cout << "\u25A0";
 			else
-				std::cout << 0;
+				std::cout << "\u25A1";
 		}
 		std::cout << std::endl;
 	}
@@ -98,11 +97,11 @@ void life::setup( char * filename)
 	for ( int y = 1; y <= kGameSize ; y++ )
 	{
 		inFile.getline( input, kGameSize +1 );
-		std::cout << input << std::endl;
 		for  ( int x = 1; x <= kGameSize ; x++)
 		{
 			current[x][y] = int (input[x-1]) - 48;
 		}
 	}
+	print();
 
 };
