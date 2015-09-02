@@ -47,10 +47,19 @@ void life::transfer()
 
 void life::update()
 {
+	for( int x = 0; x < kGridSize; x++)
+	{
+		for ( int y = 0; y < kGridSize; y++)
+		{
+			if( x == 0 || y == 0 )
+				current[x][y] = 0;
+		}
+	}
 	for( int x = 1; x <= kGameSize ; x++ )
 	{
 		for ( int y = 1; y <= kGameSize ; y++ )
 		{
+
 			next_iteration[x][y] = aliveNext( x, y);
 		}
 	}
