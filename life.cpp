@@ -1,3 +1,5 @@
+#include "life.h"
+#include <unistd.h>
 #include <fstream>
 #include <iostream>
 int life::aliveNext( int x, int y)
@@ -103,4 +105,14 @@ void life::setup( char * filename)
 	}
 	print();
 
+};
+
+void life::infiniteLoop()
+{
+	while( 1 )
+	{
+		update();
+		print();
+		sleep(1);
+	}
 };

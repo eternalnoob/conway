@@ -3,8 +3,8 @@
 #define LIFE_H
 class life
 {
-	static const int kGridSize = 5;
-	static const int kGameMax = kGridSize -1;
+	static const int kGridSize = 17;
+	static const int kGameMax = kGridSize - 1;
 	static const int kGameSize = kGridSize - 2;
 
 	
@@ -28,6 +28,7 @@ class life
 		void gameLoop(int iterations);
 		//populate the initial array according to user supplied text file
 		void setup( char * filename);
+		void infiniteLoop();
 		life();
 };
 #include "life.cpp"

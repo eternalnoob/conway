@@ -5,5 +5,5 @@ int main() {
  std::cout << "Please input your file name";
  std::cin.getline( inputFile, 256 );
  ourgame.setup( inputFile);
- ourgame.gameLoop( 5 );
+ ourgame.infiniteLoop();
 };
