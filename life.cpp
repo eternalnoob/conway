@@ -109,7 +109,7 @@ void life::setup( char * filename)
 		inFile.getline( input, kGameSize +1 );
 		for  ( int x = 1; x <= kGameSize ; x++)
 		{
-			current[x][y] = int (input[x-1]) - 48;
+			current[y][x] = int (input[x-1]) - 48;
 		}
 	}
 	print();
@@ -122,6 +122,6 @@ void life::infiniteLoop()
 	{
 		update();
 		print();
-		sleep(1);
+		usleep(250000);
 	}
 };
