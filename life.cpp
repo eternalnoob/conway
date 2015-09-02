@@ -1,4 +1,3 @@
-#include "life.h"
 #include <fstream>
 #include <iostream>
 int life::aliveNext( int x, int y)
