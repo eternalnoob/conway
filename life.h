@@ -9,6 +9,7 @@ class life
 
 	
 	private:
+		double step = 1;
 		//arrays to hold the current and next iteration of grids
 		int current [kGridSize][kGridSize];
 		int next_iteration [kGridSize][kGridSize];
@@ -30,6 +31,8 @@ class life
 		void setup( char * filename);
 		void infiniteLoop();
 		life();
+		double getStep();
+		void setStep( double nStep );
 };
 #include "life.cpp"
 #endif

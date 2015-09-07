@@ -47,11 +47,13 @@ void life::transfer()
 
 void life::update()
 {
+	//clear out the border, this is really inefficient, fix it later
+	//weoo technical debt
 	for( int x = 0; x < kGridSize; x++)
 	{
 		for ( int y = 0; y < kGridSize; y++)
 		{
-			if( x == 0 || y == 0 )
+			if( x == 0 || y == 0  || y == kGridSize-1 || x == kGridSize - 1 )
 				current[x][y] = 0;
 		}
 	}
@@ -122,6 +124,19 @@ void life::infiniteLoop()
 	{
 		update();
 		print();
-		usleep(250000);
+		//usleep takes microseconds, so convert seconds to microseconds
+		usleep(step * 1000000);
 	}
 };
+
+void life::setStep( double nStep )
+{
+	step = nStep;
+};
+
+
+double life::getStep()
+{
+	return step;
+};
+
