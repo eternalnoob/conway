@@ -11,13 +11,25 @@ int life::aliveNext( int x, int y)
 	{
 		for( int yOffset = -1 ; yOffset < 2 ; yOffset++ )
 		{
-			if( xOffset == 0  && yOffset == 0 )
-			{
-			}
-			else if ( current[ x + xOffset ][y + yOffset] == 1 )
-			{
-				count++;
-			}
+            int xcoord;
+            int ycoord;
+            if( x + xOffset < 0 ) 
+                xcoord = kGridSize - 1;
+            else
+                xcoord = (x +xOffset) % kGridSize;
+
+            if( y + yOffset < 0 )
+                ycoord = kGridSize - 1;
+            else
+                ycoord = (y + yOffset) % kGridSize;
+
+            if( x == xcoord && y == ycoord )
+            {
+            } 
+            else if ( current[xcoord][ycoord] )
+                count++;
+
+
 		}
 	}
 	if( count < 2 || count > 3)
@@ -47,19 +59,10 @@ void life::transfer()
 
 void life::update()
 {
-	//clear out the border, this is really inefficient, fix it later
-	//weoo technical debt
-	for( int x = 0; x < kGridSize; x++)
+    //call aliveNext for every value in the grid
+	for( int x = 0; x < kGridSize ; x++ )
 	{
-		for ( int y = 0; y < kGridSize; y++)
-		{
-			if( x == 0 || y == 0  || y == kGridSize-1 || x == kGridSize - 1 )
-				current[x][y] = 0;
-		}
-	}
-	for( int x = 1; x <= kGameSize ; x++ )
-	{
-		for ( int y = 1; y <= kGameSize ; y++ )
+		for ( int y = 0; y < kGridSize ; y++ )
 		{
 
 			next_iteration[x][y] = aliveNext( x, y);
@@ -73,9 +76,9 @@ void life::update()
 
 void life::print()
 {
-	for( int x = 1; x <= kGameSize ; x++ )
+	for( int x = 0; x < kGridSize ; x++ )
 	{
-		for ( int y = 1; y <= kGameSize ; y++ )
+		for ( int y = 0; y < kGridSize ; y++ )
 		{
 			if (current[x][y])
 				std::cout << "\u25A0";
@@ -105,13 +108,16 @@ void life::setup( char * filename)
 {
 
 	std::ifstream inFile(filename);
-	char input[kGameSize];
-	for ( int y = 1; y <= kGameSize ; y++ )
+	char input[kGridSize+1];
+	for ( int y = 0 ; y < kGridSize ; y++ )
 	{
-		inFile.getline( input, kGameSize +1 );
-		for  ( int x = 1; x <= kGameSize ; x++)
+        //allow for the terminating character
+		inFile.getline( input, kGridSize + 1 );
+        std::cout << input << std::endl;
+
+		for  ( int x = 0; x <  kGridSize ; x++)
 		{
-			current[y][x] = int (input[x-1]) - 48;
+			current[y][x] = int (input[x]) - 48;
 		}
 	}
 	print();

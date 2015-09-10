@@ -3,9 +3,7 @@
 #define LIFE_H
 class life
 {
-	static const int kGridSize = 40;
-	static const int kGameMax = kGridSize - 1;
-	static const int kGameSize = kGridSize - 2;
+	static const int kGridSize = 38;
 
 	
 	private:
