@@ -1,9 +1,10 @@
 #include "life.h"
+//kbhit replicates the functionality of the windows function by the same name
+#include "kbhit.cpp"
+//unistd gives us the sleep function, have not added the appropriate windows function yet
 #include <unistd.h>
 #include <fstream>
 #include <iostream>
-#include "stdio.h"
-#include "string.h"
 int life::aliveNext( int x, int y)
 {
     int returnVal = 0;
@@ -13,25 +14,18 @@ int life::aliveNext( int x, int y)
     {
         for( int yOffset = -1 ; yOffset < 2 ; yOffset++ )
         {
-            int xcoord;
-            int ycoord;
-            if( x + xOffset < 0 ) 
-                xcoord = kGridSize - 1;
-            else
-                xcoord = (x +xOffset) % kGridSize;
+            //avoid negative index and overflow index by using combo
+            //of modulus and adding gridSize
+            int xcoord = ( x + xOffset + gridSize) % gridSize;
+            int ycoord = ( y + yOffset + gridSize) % gridSize;
 
-            if( y + yOffset < 0 )
-                ycoord = kGridSize - 1;
-            else
-                ycoord = (y + yOffset) % kGridSize;
-
+            //do not count self
             if( x == xcoord && y == ycoord )
             {
             } 
+            //if there is a "truthy" value at current, increment count
             else if ( current[xcoord][ycoord] )
                 count++;
-
-
         }
     }
     if( count < 2 || count > 3)
@@ -39,7 +33,7 @@ int life::aliveNext( int x, int y)
         //we die or stay dead
         returnVal = 0;
     }
-    else if( (count == 2 && current[x][y]) || count == 3 )
+    else if( ( count == 2 && current[x][y] ) || count == 3 )
     {
         //we stay alive or are born
         returnVal = 1;
@@ -50,9 +44,11 @@ int life::aliveNext( int x, int y)
 
 void life::transfer()
 {
-    for ( int x = 0; x < kGridSize ; x++ )
+    //go through the entire vector, copying to current from the
+    //next_iteration 
+    for ( int x = 0; x < gridSize ; x++ )
     {
-        for ( int y = 0; y < kGridSize ; y++ )
+        for ( int y = 0; y < gridSize ; y++ )
         {
             current[x][y] = next_iteration[x][y];
         }
@@ -62,9 +58,9 @@ void life::transfer()
 void life::update()
 {
     //call aliveNext for every value in the grid
-    for( int x = 0; x < kGridSize ; x++ )
+    for( int x = 0; x < gridSize ; x++ )
     {
-        for ( int y = 0; y < kGridSize ; y++ )
+        for ( int y = 0; y < gridSize ; y++ )
         {
 
             next_iteration[x][y] = aliveNext( x, y);
@@ -78,12 +74,14 @@ void life::update()
 
 void life::print()
 {
-    for( int x = 0; x < kGridSize ; x++ )
+    for( int x = 0; x < gridSize ; x++ )
     {
-        for ( int y = 0; y < kGridSize ; y++ )
+        for ( int y = 0; y < gridSize ; y++ )
         {
+            //print a "black" square
             if (current[x][y])
                 std::cout << "\u25A0";
+            //print a hollow square
             else
                 std::cout << "\u25A1";
         }
@@ -106,47 +104,52 @@ life::life()
 {
 };
 
-void life::setup( char * filename)
+void life::setup( std::string filename)
 {
 
-    std::ifstream inFile(filename);
-    //fill with an appropriately large input size
-    char input[300];
-
+    std::fstream inFile(filename);
+    //create a string to read input
+    std::string input;
     //read in a blank line that will tell us how large to make our
     //vectors
-    inFile.getline( input, 300 );
+    inFile >> input;
     //set gridsize appropriately
-    kGridSize = strlen(input);
+    gridSize = input.length();
 
     //resize both current and next_iteration arrays
-    current.resize( kGridSize );
-    next_iteration.resize( kGridSize );
+    current.resize( gridSize );
+    next_iteration.resize( gridSize );
 
-    for ( int column = 0; column < kGridSize ; column++ )
+    //resize all of the sub arrays
+    for ( int column = 0; column < gridSize ; column++ )
     {
-        current[column].resize(kGridSize);
-        next_iteration[column].resize( kGridSize );
+        current[column].resize(gridSize);
+        next_iteration[column].resize( gridSize );
     }
 
-    for ( int x = 0 ; x < kGridSize ; x++ )
+    for ( int x = 0 ; x < gridSize ; x++ )
     {
         //allow for the terminating character
-        inFile.getline( input, kGridSize + 1 );
+        inFile >> input;
         std::cout << input << std::endl;
 
-        for  ( int y = 0; y <  kGridSize ; y++)
+        for  ( int y = 0; y <  gridSize ; y++)
         {
+            //this is important, convert the input into an integer
+            //then subtract the ASCII value of 0
             current[x][y] = int (input[y]) - 48;
         }
     }
+   
+    //print our initial array
     print();
 
 };
 
 void life::infiniteLoop()
 {
-    while( 1 )
+    //while the user does not press a key
+    while( kbhit() == 0)
     {
         update();
         print();

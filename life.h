@@ -4,7 +4,7 @@
 #define LIFE_H
 class life
 {
-	 int kGridSize;
+	 int gridSize;
 
 	
 	private:
@@ -27,10 +27,14 @@ class life
 		//runs the loop of the game a give number of iterations, printing after each
 		void gameLoop(int iterations);
 		//populate the initial array according to user supplied text file
-		void setup( char * filename);
+		void setup( std::string filename);
+        //loops constantly at the given Time Step
 		void infiniteLoop();
+        //default constructor because I was lazy
 		life();
+        //allows us to retrieve the time step
 		double getStep();
+        //sets the time step
 		void setStep( double nStep );
 };
 #include "life.cpp"
