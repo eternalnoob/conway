@@ -1,16 +1,17 @@
 #include <string>
+#include <vector>
 #ifndef LIFE_H
 #define LIFE_H
 class life
 {
-	static const int kGridSize = 38;
+	 int kGridSize;
 
 	
 	private:
 		double step = 1;
 		//arrays to hold the current and next iteration of grids
-		int current [kGridSize][kGridSize];
-		int next_iteration [kGridSize][kGridSize];
+        std::vector < std::vector<int> > current;
+        std::vector < std::vector<int> > next_iteration;
 
 		//called within update to see if cell will be "alive" in the next iteration
 		int aliveNext(int x, int y);
