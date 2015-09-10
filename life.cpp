@@ -15,9 +15,9 @@ int life::aliveNext( int x, int y)
         for( int yOffset = -1 ; yOffset < 2 ; yOffset++ )
         {
             //avoid negative index and overflow index by using combo
-            //of modulus and adding gridSize
-            int xcoord = ( x + xOffset + gridSize) % gridSize;
-            int ycoord = ( y + yOffset + gridSize) % gridSize;
+            //of modulus and adding xGridSize
+            int xcoord = ( x + xOffset + xGridSize) % xGridSize;
+            int ycoord = ( y + yOffset + yGridSize) % yGridSize;
 
             //do not count self
             if( x == xcoord && y == ycoord )
@@ -46,9 +46,9 @@ void life::transfer()
 {
     //go through the entire vector, copying to current from the
     //next_iteration 
-    for ( int x = 0; x < gridSize ; x++ )
+    for ( int x = 0; x < xGridSize ; x++ )
     {
-        for ( int y = 0; y < gridSize ; y++ )
+        for ( int y = 0; y < yGridSize ; y++ )
         {
             current[x][y] = next_iteration[x][y];
         }
@@ -58,9 +58,9 @@ void life::transfer()
 void life::update()
 {
     //call aliveNext for every value in the grid
-    for( int x = 0; x < gridSize ; x++ )
+    for( int x = 0; x < xGridSize ; x++ )
     {
-        for ( int y = 0; y < gridSize ; y++ )
+        for ( int y = 0; y < yGridSize ; y++ )
         {
 
             next_iteration[x][y] = aliveNext( x, y);
@@ -74,9 +74,9 @@ void life::update()
 
 void life::print()
 {
-    for( int x = 0; x < gridSize ; x++ )
+    for( int x = 0; x < xGridSize ; x++ )
     {
-        for ( int y = 0; y < gridSize ; y++ )
+        for ( int y = 0; y < yGridSize ; y++ )
         {
             //print a "black" square
             if (current[x][y])
@@ -100,8 +100,9 @@ void life::gameLoop( int iterations )
     }
 }
 
-life::life()
+life::life( std::string filename )
 {
+    setup( filename );
 };
 
 void life::setup( std::string filename)
@@ -110,30 +111,35 @@ void life::setup( std::string filename)
     std::fstream inFile(filename);
     //create a string to read input
     std::string input;
-    //read in a blank line that will tell us how large to make our
-    //vectors
+    //read in a blank line that will tell us how many columns
     inFile >> input;
-    //set gridsize appropriately
-    gridSize = input.length();
+    //set xgridsize appropriately
+    xGridSize = input.length();
+
+    //read in a blank line that will tell us how many rows
+    inFile >> input;
+    //set yGridSize appropriately
+    yGridSize = input.length();
 
     //resize both current and next_iteration arrays
-    current.resize( gridSize );
-    next_iteration.resize( gridSize );
+    //with the correct amount of columns
+    current.resize( xGridSize );
+    next_iteration.resize( xGridSize );
 
     //resize all of the sub arrays
-    for ( int column = 0; column < gridSize ; column++ )
+    for ( int column = 0; column < xGridSize ; column++ )
     {
-        current[column].resize(gridSize);
-        next_iteration[column].resize( gridSize );
+        current[column].resize(yGridSize);
+        next_iteration[column].resize( yGridSize );
     }
 
-    for ( int x = 0 ; x < gridSize ; x++ )
+    for ( int x = 0 ; x < xGridSize ; x++ )
     {
         //allow for the terminating character
         inFile >> input;
         std::cout << input << std::endl;
 
-        for  ( int y = 0; y <  gridSize ; y++)
+        for  ( int y = 0; y <  yGridSize ; y++)
         {
             //this is important, convert the input into an integer
             //then subtract the ASCII value of 0

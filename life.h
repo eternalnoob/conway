@@ -4,7 +4,8 @@
 #define LIFE_H
 class life
 {
-	 int gridSize;
+	 int xGridSize;
+     int yGridSize;
 
 	
 	private:
@@ -23,15 +24,15 @@ class life
 		//called every iteration to update the grid
 		void update();
 		
+		//populate the initial array according to user supplied text file
+		void setup( std::string filename);
 	public:
 		//runs the loop of the game a give number of iterations, printing after each
 		void gameLoop(int iterations);
-		//populate the initial array according to user supplied text file
-		void setup( std::string filename);
         //loops constantly at the given Time Step
 		void infiniteLoop();
-        //default constructor because I was lazy
-		life();
+        //constructor initiates our grids
+		life( std::string filename);
         //allows us to retrieve the time step
 		double getStep();
         //sets the time step
