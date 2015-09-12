@@ -10,5 +10,13 @@ int main() {
  std::cin >> timeStep;
  std::cin.clear();
  ourgame.setStep( timeStep );
+
+ bool toroid;
+ std::cout << "Please select whether the game should be toroidal (overlap at  edges)"
+     << std::endl;
+ std::cin >> toroid;
+ std::cin.clear();
+ ourgame.setToroidal( toroid );
+
  ourgame.infiniteLoop();
 };

@@ -5,7 +5,7 @@
 #include <unistd.h>
 #include <fstream>
 #include <iostream>
-int life::aliveNext( int x, int y)
+int life::toroidalAliveNext( int x, int y)
 {
     int returnVal = 0;
     int count = 0;
@@ -23,6 +23,47 @@ int life::aliveNext( int x, int y)
             if( x == xcoord && y == ycoord )
             {
             } 
+            //if there is a "truthy" value at current, increment count
+            else if ( current[xcoord][ycoord] )
+                count++;
+        }
+    }
+    if( count < 2 || count > 3)
+    {
+        //we die or stay dead
+        returnVal = 0;
+    }
+    else if( ( count == 2 && current[x][y] ) || count == 3 )
+    {
+        //we stay alive or are born
+        returnVal = 1;
+    }
+
+    return returnVal;
+}
+int life::nonToroidAliveNext( int x, int y)
+{
+    int returnVal = 0;
+    int count = 0;
+
+    for( int xOffset = -1 ; xOffset < 2 ; xOffset++ )
+    {
+        for( int yOffset = -1 ; yOffset < 2 ; yOffset++ )
+        {
+            //avoid negative index and overflow index by using combo
+            //of modulus and adding xGridSize
+            int xcoord = ( x + xOffset );
+            int ycoord = ( y + yOffset );
+
+            //do not count self
+            if( ( x == xcoord && y == ycoord ) )
+            {
+            } 
+            //ignore cells past border
+            else if( xcoord >= xGridSize || xcoord < 0 
+                   || ycoord >= yGridSize || ycoord < 0 )
+            {
+            }
             //if there is a "truthy" value at current, increment count
             else if ( current[xcoord][ycoord] )
                 count++;
@@ -63,7 +104,9 @@ void life::update()
         for ( int y = 0; y < yGridSize ; y++ )
         {
 
-            next_iteration[x][y] = aliveNext( x, y);
+            //call the correct AliveNext Function
+            next_iteration[x][y] = ( toroidal ?
+            toroidalAliveNext(x, y) : nonToroidAliveNext(x, y) );
         }
     }
 
@@ -74,20 +117,21 @@ void life::update()
 
 void life::print()
 {
+
+    std:: cout << std::endl;
     for( int x = 0; x < xGridSize ; x++ )
     {
         for ( int y = 0; y < yGridSize ; y++ )
         {
             //print a "black" square
             if (current[x][y])
-                std::cout << "\u25A0";
+                std::cout << "\u25A0" << " ";
             //print a hollow square
             else
-                std::cout << "\u25A1";
+                std::cout << "\u25A1" << " ";
         }
         std::cout << std::endl;
     }
-    std:: cout << std::endl;
 }
 
 //controls how many iterations we print
@@ -175,3 +219,12 @@ double life::getStep()
     return step;
 };
 
+void life::setToroidal( bool toroid )
+{
+    toroidal = toroid;
+};
+
+bool life::getToroidal()
+{
+    return toroidal;
+};
