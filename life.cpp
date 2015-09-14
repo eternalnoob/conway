@@ -1,97 +1,93 @@
 #include "life.h"
-//kbhit replicates the functionality of the windows function by the same name
-#include "kbhit.cpp"
-//unistd gives us the sleep function, have not added the appropriate windows function yet
-#include <unistd.h>
 #include <fstream>
-#include <iostream>
-int life::toroidalAliveNext( int x, int y)
+int life::toroidalAliveNext( int row, int col)
 {
-    int returnVal = 0;
-    int count = 0;
+	int returnVal = 0;
+	int count = 0;
 
-    for( int xOffset = -1 ; xOffset < 2 ; xOffset++ )
-    {
-        for( int yOffset = -1 ; yOffset < 2 ; yOffset++ )
-        {
-            //avoid negative index and overflow index by using combo
-            //of modulus and adding xGridSize
-            int xcoord = ( x + xOffset + xGridSize) % xGridSize;
-            int ycoord = ( y + yOffset + yGridSize) % yGridSize;
+	for( int rowOffset = -1; rowOffset < 2; rowOffset++ )
+	{
+		for( int colOffset = -1; colOffset < 2; colOffset++ )
+		{
+			int rowCoord = ( row + rowOffset + rowGridSize ) % rowGridSize;
+			int colCoord = ( col + colOffset + colGridSize ) % colGridSize;
 
-            //do not count self
-            if( x == xcoord && y == ycoord )
-            {
-            } 
-            //if there is a "truthy" value at current, increment count
-            else if ( current[xcoord][ycoord] )
-                count++;
-        }
-    }
+			if( row == rowCoord && col == colCoord)
+			{
+
+			}
+			else if( current[rowCoord][colCoord] )
+			{
+				count++;
+			}
+
+		}
+	}
+	if( count < 2 || count > 3 )
+	{
+		//we die or stay dead
+		returnVal = 0;
+	}
+	else if ( ( count == 2 && current[row][col] ) || count == 3) 
+	{
+		//we stay alive or are born
+		returnVal = 1;
+	}
+	return returnVal;
+
+};
+
+int life::nonToroidalAliveNext( int row, int col )
+{
+	int returnVal = 0;
+	int count = 0;
+	
+	for( int rowOffset = -1; rowOffset < 2 ; rowOffset++ )
+	{
+		for( int colOffset = -1; colOffset < 2 ; colOffset++ )
+		{
+			int rowCoord = row + rowOffset;
+			int colCoord = col + colOffset;
+
+			if( rowCoord == row && colCoord == col )
+			{
+			}
+			else if( rowCoord >= rowGridSize || rowCoord < 0
+					|| colCoord >= colGridSize || colCoord < 0)
+			{
+			}
+			else if( current[rowCoord][colCoord])
+			{
+				count++;
+			}
+
+		}
+	}
+
     if( count < 2 || count > 3)
     {
         //we die or stay dead
         returnVal = 0;
     }
-    else if( ( count == 2 && current[x][y] ) || count == 3 )
+    else if( ( count == 2 && current[row][col] ) || count == 3 )
     {
         //we stay alive or are born
         returnVal = 1;
     }
 
     return returnVal;
-}
-int life::nonToroidAliveNext( int x, int y)
-{
-    int returnVal = 0;
-    int count = 0;
 
-    for( int xOffset = -1 ; xOffset < 2 ; xOffset++ )
-    {
-        for( int yOffset = -1 ; yOffset < 2 ; yOffset++ )
-        {
-            //avoid negative index and overflow index by using combo
-            //of modulus and adding xGridSize
-            int xcoord = ( x + xOffset );
-            int ycoord = ( y + yOffset );
-
-            //do not count self
-            if( ( x == xcoord && y == ycoord ) )
-            {
-            } 
-            //ignore cells past border
-            else if( xcoord >= xGridSize || xcoord < 0 
-                   || ycoord >= yGridSize || ycoord < 0 )
-            {
-            }
-            //if there is a "truthy" value at current, increment count
-            else if ( current[xcoord][ycoord] )
-                count++;
-        }
-    }
-    if( count < 2 || count > 3)
-    {
-        //we die or stay dead
-        returnVal = 0;
-    }
-    else if( ( count == 2 && current[x][y] ) || count == 3 )
-    {
-        //we stay alive or are born
-        returnVal = 1;
-    }
-
-    return returnVal;
 };
 
 void life::transfer()
 {
     //go through the entire vector, copying to current from the
     //next_iteration 
-    for ( int x = 0; x < xGridSize ; x++ )
+    for ( int row = 0; row < rowGridSize ; row++ )
     {
-        for ( int y = 0; y < yGridSize ; y++ )
+        for ( int col = 0; col < rowGridSize ; col++ )
         {
-            current[x][y] = next_iteration[x][y];
+            current[row][col] = next_iteration[row][col];
         }
     }
 };
@@ -99,14 +95,14 @@ void life::transfer()
 void life::update()
 {
     //call aliveNext for every value in the grid
-    for( int x = 0; x < xGridSize ; x++ )
+    for( int row = 0; row < rowGridSize ; row++ )
     {
-        for ( int y = 0; y < yGridSize ; y++ )
+        for ( int col = 0; col < rowGridSize ; col++ )
         {
 
             //call the correct AliveNext Function
-            next_iteration[x][y] = ( toroidal ?
-            toroidalAliveNext(x, y) : nonToroidAliveNext(x, y) );
+            next_iteration[row][col] = ( toroidal ?
+            toroidalAliveNext(row, col) : nonToroidalAliveNext(row, col) );
         }
     }
 
@@ -115,136 +111,81 @@ void life::update()
 
 }
 
-void life::print()
-{
-
-    std:: cout << std::endl;
-    for( int x = 0; x < xGridSize ; x++ )
-    {
-        for ( int y = 0; y < yGridSize ; y++ )
-        {
-            //print a "black" square
-            if (current[x][y])
-                std::cout << "\u25A0" << " ";
-            //print a hollow square
-            else
-                std::cout << "\u25A1" << " ";
-        }
-        std::cout << std::endl;
-    }
-}
-
-//controls how many iterations we print
-void life::gameLoop( int iterations )
-{
-    for( int n = 0; n < iterations ; n++ )
-    {
-        update();
-        print();
-    }
-}
-
-life::life(std::string filename)
-{
-	setup(filename);
-};
-
 void life::setup( std::string filename)
 {
 
     std::fstream inFile(filename);
     //create a string to read input
     std::string input;
-    //read in a blank line that will tell us how many columns
-    inFile >> input;
-    //set xgridsize appropriately
-    xGridSize = input.length();
-
     //read in a blank line that will tell us how many rows
     inFile >> input;
+    //set rowgridsize appropriately
+    rowGridSize = input.length();
+
+    //read in a blank line that will tell us how many columns
+    inFile >> input;
     //set yGridSize appropriately
-    yGridSize = input.length();
+    colGridSize = input.length();
 
     //resize both current and next_iteration arrays
     //with the correct amount of columns
-    current.resize( xGridSize );
-    next_iteration.resize( xGridSize );
+    current.resize( rowGridSize );
+    next_iteration.resize( rowGridSize );
 
     //resize all of the sub arrays
-    for ( int column = 0; column < xGridSize ; column++ )
+    for ( int row = 0; row < rowGridSize ; row++ )
     {
-        current[column].resize(yGridSize);
-        next_iteration[column].resize( yGridSize );
+        current[row].resize(colGridSize);
+        next_iteration[row].resize( colGridSize );
     }
 
-    for ( int x = 0 ; x < xGridSize ; x++ )
+    for ( int row = 0 ; row < rowGridSize ; row++ )
     {
         //allow for the terminating character
         inFile >> input;
 
-        for  ( int y = 0; y <  yGridSize ; y++)
+        for  ( int col = 0; col <  colGridSize ; col++)
         {
             //this is important, convert the input into an integer
             //then subtract the ascii value of 0
-            current[x][y] = int (input[y]) - 48;
+            current[row][col] = int (input[col]) - 48;
         }
     }
-   
-    //print our initial array
 
+};
+
+life::life(std::string filename)
+{
+	setup(filename);
 };
 
 life::life()
 {
 };
 
-life::life( int x, int y)
+life::life( int row, int col)
 {
-	xGridSize = x;
-	yGridSize = y;
-    current.resize( xGridSize );
-    next_iteration.resize( xGridSize );
+	rowGridSize = row;
+	colGridSize = col;
+    current.resize( rowGridSize );
+    next_iteration.resize( rowGridSize );
 
-    for ( int column = 0; column < xGridSize ; column++ )
+    for ( int row = 0; row < rowGridSize ; row++ )
     {
-        current[column].resize(yGridSize);
-        next_iteration[column].resize( yGridSize );
+        current[row].resize(colGridSize);
+        next_iteration[row].resize( colGridSize );
     }
-    for ( int x = 0 ; x < xGridSize ; x++ )
+    for ( int row = 0 ; row < rowGridSize ; row++ )
     {
-        //allow for the terminating character
 
-        for  ( int y = 0; y <  yGridSize ; y++)
+        for  ( int col = 0; col <  colGridSize ; col++)
         {
             //this is important, convert the input into an integer
             //then subtract the ascii value of 0
-            current[x][y] = 0;
+            current[row][col] = 0;
         }
     }
 }
-
-void life::infiniteLoop()
-{
-    //while the user does not press a key
-    while( kbhit() == 0)
-    {
-        update();
-        print();
-        //usleep takes microseconds, so convert seconds to microseconds
-        usleep(step * 1000000);
-    }
-};
-
-void life::setStep( double nStep )
-{
-    step = nStep;
-};
-
-
-double life::getStep()
-{
-    return step;
-};
 
 void life::setToroidal( bool toroid )
 {
@@ -256,19 +197,19 @@ bool life::getToroidal()
     return toroidal;
 };
 
-int life::getValAt( int x, int y)
+int life::getValAt( int row, int col)
 {
-	if( x < xGridSize && y < yGridSize )
-		return current[x][y];
+	if( row < rowGridSize && col < colGridSize )
+		return current[row][col];
 	else
 		return -1;
 };
 
-int life::setValAt( int x, int y, int on)
+int life::setValAt( int row, int col, int on)
 {
-	if( x < xGridSize && y < yGridSize )
+	if( row < rowGridSize && col < colGridSize )
 	{
-		current[x][y] = on;
+		current[row][col] = on;
 		return 0;
 	}
 	else
@@ -277,12 +218,12 @@ int life::setValAt( int x, int y, int on)
 
 				
 
-int life::getXColumns()
+int life::getColumns()
 {
-	return xGridSize;
+	return colGridSize;
 };
 
-int life::getYRows()
+int life::getRows()
 {
-	return yGridSize;
+	return rowGridSize;
 };

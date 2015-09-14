@@ -1,4 +1,6 @@
-#include "life.h"
+#include "life.h.old"
+#include <fstream>
+#include <iostream>
 int main() {
  char inputFile [256];
  std::cout << "Please input your file name" << std::endl;

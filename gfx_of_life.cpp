@@ -51,19 +51,17 @@ int main( int argc, char* args[])
 		std::cin >> filename;
 		ourgame = life(filename);
 	}
-	/*
 	   else
 	   {
 	   std::cout << "Please Enter the number of columns you want your grid to have" << std::endl;
-	   int x;
-	   std::cin >> x;
+	   int col;
+	   int row;
+	   std::cin >> col;
 	   std::cout << "Please Enter the number of rows you want your grid to have" << std::endl;
-	   int y;
-	   std::cin >> y;
-	   ourgame = life(x,y);
+	   std::cin >> row;
+	   ourgame = life(row,col);
 
 	   }
-	   */
 
 	ourgame.setToroidal(0);
 
@@ -118,9 +116,9 @@ void runGame(life * gameRef)
 			{
 				if( event.button.button == SDL_BUTTON_LEFT )
 				{
-					int x = event.button.x / CELL_SIZE;
-					int y = event.button.y / CELL_SIZE;
-					gameRef->setValAt( y, x , !(gameRef->getValAt( x, y) ));
+					int col = event.button.x / CELL_SIZE;
+					int row = event.button.y / CELL_SIZE;
+					gameRef->setValAt( row, col , !(gameRef->getValAt( row, col) ));
 					render(gameRef);
 
 				}
@@ -144,10 +142,10 @@ void render( life * gameRef)
 	// Clear the window and make it all red
 	SDL_RenderClear( renderer1 );
 
-	rectMore r[gameRef->getYRows()][gameRef->getXColumns()];
-	for(int row = 0; row < gameRef->getXColumns(); row++ )
+	rectMore r[gameRef->getRows()][gameRef->getColumns()];
+	for(int row = 0; row < gameRef->getRows(); row++ )
 	{
-		for ( int col = 0; col < gameRef->getYRows(); col++ )
+		for ( int col = 0; col < gameRef->getColumns(); col++ )
 		{
 			r[row][col].mRect.x = col*CELL_WIDTH;
 			r[row][col].mRect.y = row*CELL_HEIGHT;
