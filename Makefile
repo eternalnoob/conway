@@ -1,2 +1,2 @@
 all:
-	g++ driver.cpp -o game_of_life -std=c++11
+	g++ gfx_of_life.cpp -o gfx_of_life -std=c++11 -lSDL2

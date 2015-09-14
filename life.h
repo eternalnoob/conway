@@ -23,8 +23,6 @@ class life
         void print();
         //called to transfer the next_iteration into current
         void transfer();
-        //called every iteration to update the grid
-        void update();
 
         //populate the initial array according to user supplied text file
         void setup( std::string filename);
@@ -40,8 +38,24 @@ class life
         //sets the time step
         void setStep( double nStep );
         //used to set whether or not the grid is toroidal
-        bool getToroidal();
         void setToroidal( bool toroidal );
+		//let us now if the grid is toroidal or not
+        bool getToroidal();
+
+		//increase time step
+		void increaseStep(double seconds);
+		
+		int getXColumns();
+		int getYRows();
+		
+		//decrease time step
+		void decreaseStep(double seconds);
+
+		//get value at x and y coord given such that it is in range
+		int getValAt( int x, int y);
+
+        //called every iteration to update the grid
+        void update();
 };
 #include "life.cpp"
 #endif

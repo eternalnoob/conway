@@ -181,7 +181,6 @@ void life::setup( std::string filename)
     {
         //allow for the terminating character
         inFile >> input;
-        std::cout << input << std::endl;
 
         for  ( int y = 0; y <  yGridSize ; y++)
         {
@@ -192,7 +191,6 @@ void life::setup( std::string filename)
     }
    
     //print our initial array
-    print();
 
 };
 
@@ -227,4 +225,33 @@ void life::setToroidal( bool toroid )
 bool life::getToroidal()
 {
     return toroidal;
+};
+
+
+void life::increaseStep( double seconds )
+{
+	step += seconds;
+};
+
+void life::decreaseStep( double seconds )
+{
+	step -= seconds;
+};
+
+int life::getValAt( int x, int y)
+{
+	if( x < xGridSize && y < yGridSize )
+		return current[x][y];
+	else
+		return -1;
+};
+
+int life::getXColumns()
+{
+	return xGridSize;
+};
+
+int life::getYRows()
+{
+	return yGridSize;
 };

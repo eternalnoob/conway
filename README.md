@@ -2,6 +2,11 @@
 ##By: Ethan Seither
 
 1. Getting Started
+  0. This requires the SDL2 graphics library for the GUI to work
+    a. apt-get install libsdl2-dev if you have that apt magic
+    b. otherwise you can install it however you want
+    c. If you do not want these or cannot get these, you can still use the old console interface
+    d. To do so, run g++ driver.cpp -std=c++11
   1. Compile by running make in the cloned directory
   2. Provide a properly formatted input file
     a. First line should supply the number of rows in the input file
@@ -18,4 +23,4 @@
   3. You can decide whether the array will be toroidal or not in the driver program
 3. What's Next
   1. Get this working on windows using equivalent of linux-exclusive functions
-  2. Possibly tie in with a very simple graphics library such that user can create their own grids more easily
+  2. Set up Graphics library to allow user to toggle cells on mouse click and pause
