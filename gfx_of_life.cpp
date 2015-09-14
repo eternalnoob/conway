@@ -2,15 +2,15 @@
 #include <iostream>
 #include "life.h"
 
-const int SCREEN_WIDTH = 1800;
-const int SCREEN_HEIGHT = 1000;
+const int SCREEN_WIDTH = 1300;
+const int SCREEN_HEIGHT = 700;
 
-const int CELL_WIDTH = 20;
-const int CELL_HEIGHT = 20;
+const int CELL_SIZE = 15;
+int CELL_WIDTH = CELL_SIZE;
+int CELL_HEIGHT = CELL_SIZE;
 
 SDL_Window* window;
 SDL_Renderer* renderer1;
-SDL_Renderer* renderer2;
 
 int delay = 100;
 
@@ -29,6 +29,8 @@ void render(life * gameRef);
 //game loop
 void runGame(life * gameRef);
 
+void processClick(int x, int y);
+
 struct rectMore
 {
 	SDL_Rect mRect;
@@ -38,7 +40,31 @@ struct rectMore
 
 int main( int argc, char* args[])
 {
-	life ourgame = life("glider-gun.txt");
+	life ourgame = life();
+	std::cout << "Do you have an input file? (1 = yes, 0 = no)" << std::endl;
+	bool input;
+	std::cin >> input;
+	if (input)
+	{
+		std::cout << "Please enter the name of your input file" << std::endl;
+		std::string filename;
+		std::cin >> filename;
+		ourgame = life(filename);
+	}
+	/*
+	   else
+	   {
+	   std::cout << "Please Enter the number of columns you want your grid to have" << std::endl;
+	   int x;
+	   std::cin >> x;
+	   std::cout << "Please Enter the number of rows you want your grid to have" << std::endl;
+	   int y;
+	   std::cin >> y;
+	   ourgame = life(x,y);
+
+	   }
+	   */
+
 	ourgame.setToroidal(0);
 
 	if( !initEverything() )
@@ -52,7 +78,10 @@ int main( int argc, char* args[])
 void runGame(life * gameRef)
 {
 	bool loop = true;
+	//small flag to keep track if game is paused
+	bool paused = true;
 
+	render(gameRef);
 	while ( loop )
 	{
 		SDL_Event event;
@@ -77,15 +106,36 @@ void runGame(life * gameRef)
 					case SDLK_UP:
 						gameRef->setToroidal( 1 );
 						break;
+
+					case SDLK_SPACE:
+						paused = !paused;
+
 					default :
 						break;
 				}
 			}
-		}
-		gameRef->update();
-		render(gameRef);
+			else if ( event.type == SDL_MOUSEBUTTONDOWN )
+			{
+				if( event.button.button == SDL_BUTTON_LEFT )
+				{
+					int x = event.button.x / CELL_SIZE;
+					int y = event.button.y / CELL_SIZE;
+					gameRef->setValAt( y, x , !(gameRef->getValAt( x, y) ));
+					render(gameRef);
 
-		// Add a 16msec delay to make our game run at ~60 fps
+				}
+
+			}
+
+		}
+
+		if( !paused )
+		{
+			gameRef->update();
+			render(gameRef);
+		}
+
+		// Add a 100msec delay to make our game run at a reasonable rate
 		SDL_Delay(delay);
 	}
 }
@@ -95,9 +145,9 @@ void render( life * gameRef)
 	SDL_RenderClear( renderer1 );
 
 	rectMore r[gameRef->getYRows()][gameRef->getXColumns()];
-	for(int row = 0; row < gameRef->getYRows(); row++ )
+	for(int row = 0; row < gameRef->getXColumns(); row++ )
 	{
-		for ( int col = 0; col < gameRef->getXColumns(); col++ )
+		for ( int col = 0; col < gameRef->getYRows(); col++ )
 		{
 			r[row][col].mRect.x = col*CELL_WIDTH;
 			r[row][col].mRect.y = row*CELL_HEIGHT;
@@ -106,12 +156,11 @@ void render( life * gameRef)
 			r[row][col].on = gameRef->getValAt( row, col );
 			if (r[row][col].on)
 			{
-				SDL_RenderDrawRect(renderer1, &r[row][col].mRect);
 				SDL_RenderFillRect(renderer1, &r[row][col].mRect);
 			}
 			else
 			{
-				SDL_RenderDrawRect(renderer2, &r[row][col].mRect);
+				SDL_RenderDrawRect(renderer1, &r[row][col].mRect);
 			}
 		}
 	}
@@ -160,7 +209,6 @@ bool createWindow()
 bool createRenderer()
 {
 	renderer1 = SDL_CreateRenderer( window, -1, 0 );
-	renderer2 = SDL_CreateRenderer( window, -1, 0 );
 
 	if ( renderer1 == nullptr )
 	{
@@ -175,12 +223,8 @@ void setupRenderer()
 	// Set size of renderer1 to the same as window
 	SDL_RenderSetLogicalSize( renderer1, SCREEN_WIDTH, SCREEN_HEIGHT );
 
-	//set size of renderer2 to the same as window
-	SDL_RenderSetLogicalSize( renderer2, SCREEN_WIDTH, SCREEN_HEIGHT );
-
 	// Set color of renderer1 to black
 	SDL_SetRenderDrawColor( renderer1, 0, 0, 0, 0 );
 
-	SDL_SetRenderDrawColor( renderer2, 255, 255, 255, 255);
 }
 

@@ -5,8 +5,11 @@
 class life
 {
     private:
+		//number of columns
         int xGridSize;
+		//number of rows
         int yGridSize;
+		//whether the grid overlaps
         bool toroidal;
         double step = 1;
         //arrays to hold the current and next iteration of grids
@@ -23,9 +26,9 @@ class life
         void print();
         //called to transfer the next_iteration into current
         void transfer();
-
         //populate the initial array according to user supplied text file
         void setup( std::string filename);
+
     public:
         //runs the loop of the game a give number of iterations, printing after each
         void gameLoop(int iterations);
@@ -33,6 +36,10 @@ class life
         void infiniteLoop();
         //constructor initiates our grids
         life( std::string filename);
+		//constructor initiates empty grid;
+		life( int x, int y);
+		//default constructor populates an nonexistant grid;
+		life();
         //allows us to retrieve the time step
         double getStep();
         //sets the time step
@@ -42,17 +49,14 @@ class life
 		//let us now if the grid is toroidal or not
         bool getToroidal();
 
-		//increase time step
-		void increaseStep(double seconds);
-		
 		int getXColumns();
 		int getYRows();
-		
-		//decrease time step
-		void decreaseStep(double seconds);
-
 		//get value at x and y coord given such that it is in range
 		int getValAt( int x, int y);
+
+		//set value at x and y coord given such that it is in range
+		//return 0 on success, 1 on failure
+		int setValAt( int x, int y, int on);
 
         //called every iteration to update the grid
         void update();

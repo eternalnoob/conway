@@ -144,9 +144,9 @@ void life::gameLoop( int iterations )
     }
 }
 
-life::life( std::string filename )
+life::life(std::string filename)
 {
-    setup( filename );
+	setup(filename);
 };
 
 void life::setup( std::string filename)
@@ -185,7 +185,7 @@ void life::setup( std::string filename)
         for  ( int y = 0; y <  yGridSize ; y++)
         {
             //this is important, convert the input into an integer
-            //then subtract the ASCII value of 0
+            //then subtract the ascii value of 0
             current[x][y] = int (input[y]) - 48;
         }
     }
@@ -193,6 +193,35 @@ void life::setup( std::string filename)
     //print our initial array
 
 };
+
+life::life()
+{
+};
+
+life::life( int x, int y)
+{
+	xGridSize = x;
+	yGridSize = y;
+    current.resize( xGridSize );
+    next_iteration.resize( xGridSize );
+
+    for ( int column = 0; column < xGridSize ; column++ )
+    {
+        current[column].resize(yGridSize);
+        next_iteration[column].resize( yGridSize );
+    }
+    for ( int x = 0 ; x < xGridSize ; x++ )
+    {
+        //allow for the terminating character
+
+        for  ( int y = 0; y <  yGridSize ; y++)
+        {
+            //this is important, convert the input into an integer
+            //then subtract the ascii value of 0
+            current[x][y] = 0;
+        }
+    }
+}
 
 void life::infiniteLoop()
 {
@@ -227,17 +256,6 @@ bool life::getToroidal()
     return toroidal;
 };
 
-
-void life::increaseStep( double seconds )
-{
-	step += seconds;
-};
-
-void life::decreaseStep( double seconds )
-{
-	step -= seconds;
-};
-
 int life::getValAt( int x, int y)
 {
 	if( x < xGridSize && y < yGridSize )
@@ -245,6 +263,19 @@ int life::getValAt( int x, int y)
 	else
 		return -1;
 };
+
+int life::setValAt( int x, int y, int on)
+{
+	if( x < xGridSize && y < yGridSize )
+	{
+		current[x][y] = on;
+		return 0;
+	}
+	else
+		return 1;
+}
+
+				
 
 int life::getXColumns()
 {
