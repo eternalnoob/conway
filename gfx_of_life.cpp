@@ -75,6 +75,7 @@ int main( int argc, char* args[])
 
 void runGame(life * gameRef)
 {
+	render(gameRef);
 	bool loop = true;
 	//small flag to keep track if game is paused
 	bool paused = true;
