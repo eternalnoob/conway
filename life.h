@@ -10,7 +10,7 @@ class life
 		//number of rows
         int rowGridSize;
 		//whether the grid overlaps
-        bool toroidal;
+        bool toroidal = 1;
         //arrays to hold the current and next iteration of grids
         std::vector < std::vector<int> > current;
         std::vector < std::vector<int> > next_iteration;

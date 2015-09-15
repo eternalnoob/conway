@@ -51,17 +51,17 @@ int main( int argc, char* args[])
 		std::cin >> filename;
 		ourgame = life(filename);
 	}
-	   else
-	   {
-	   std::cout << "Please Enter the number of columns you want your grid to have" << std::endl;
-	   int col;
-	   int row;
-	   std::cin >> col;
-	   std::cout << "Please Enter the number of rows you want your grid to have" << std::endl;
-	   std::cin >> row;
-	   ourgame = life(row,col);
+	else
+	{
+		int col;
+		int row;
+		std::cout << "Please Enter the number of columns you want your grid to have" << std::endl;
+		std::cin >> col;
+		std::cout << "Please Enter the number of rows you want your grid to have" << std::endl;
+		std::cin >> row;
+		ourgame = life(row,col);
 
-	   }
+	}
 
 	ourgame.setToroidal(0);
 
@@ -79,7 +79,6 @@ void runGame(life * gameRef)
 	//small flag to keep track if game is paused
 	bool paused = true;
 
-	render(gameRef);
 	while ( loop )
 	{
 		SDL_Event event;

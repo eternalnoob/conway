@@ -17,9 +17,7 @@ int life::toroidalAliveNext( int row, int col)
 
 			}
 			else if( current[rowCoord][colCoord] )
-			{
 				count++;
-			}
 
 		}
 	}
@@ -49,7 +47,7 @@ int life::nonToroidalAliveNext( int row, int col )
 			int rowCoord = row + rowOffset;
 			int colCoord = col + colOffset;
 
-			if( rowCoord == row && colCoord == col )
+			if( (rowCoord == row && colCoord == col)  )
 			{
 			}
 			else if( rowCoord >= rowGridSize || rowCoord < 0
@@ -85,7 +83,7 @@ void life::transfer()
     //next_iteration 
     for ( int row = 0; row < rowGridSize ; row++ )
     {
-        for ( int col = 0; col < rowGridSize ; col++ )
+        for ( int col = 0; col < colGridSize ; col++ )
         {
             current[row][col] = next_iteration[row][col];
         }
@@ -97,7 +95,7 @@ void life::update()
     //call aliveNext for every value in the grid
     for( int row = 0; row < rowGridSize ; row++ )
     {
-        for ( int col = 0; col < rowGridSize ; col++ )
+        for ( int col = 0; col < colGridSize ; col++ )
         {
 
             //call the correct AliveNext Function
